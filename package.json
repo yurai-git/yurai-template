@@ -1,0 +1,40 @@
+{
+  "name": "@yurai/yurai-template",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "packageManager": "pnpm@10.30.2",
+  "type": "module",
+  "bin": {
+    "yurai-template": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@dprint/dockerfile": "^0.3.3",
+    "@dprint/json": "^0.21.1",
+    "@dprint/markdown": "^0.21.1",
+    "@dprint/typescript": "^0.95.15",
+    "@eslint/compat": "^2.0.2",
+    "@types/node": "^25.3.0",
+    "dprint-plugin-malva": "^0.15.2",
+    "dprint-plugin-markup": "^0.26.0",
+    "dprint-plugin-yaml": "^0.6.0",
+    "eslint": "^10.0.2",
+    "eslint-plugin-format": "^2.0.1",
+    "jiti": "^2.6.1",
+    "jsonc-parser": "^3.3.1",
+    "sass": "^1.97.3",
+    "typescript": "^5.9.3"
+  }
+}

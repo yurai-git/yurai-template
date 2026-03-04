@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "outDir": "dist",
+    "moduleResolution": "nodenext",
+  },
+  "include": ["index.ts"],
+}
