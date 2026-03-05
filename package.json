@@ -1,16 +1,21 @@
 {
   "name": "@yurai/yurai-template",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "A package to install my personal template.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yurai-git/yurai-template.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Yurai",
+    "url": "https://github.com/yurai-git"
+  },
   "license": "BSD-3-Clause",
   "packageManager": "pnpm@10.30.2",
   "type": "module",
