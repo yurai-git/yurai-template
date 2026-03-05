@@ -9,7 +9,7 @@ const dprint = {
   typescript: {
     plugin: 'node_modules/@dprint/typescript/plugin.wasm',
     options: {
-      'lineWidth': 120,
+      'lineWidth': 80,
       'indentWidth': 2,
       'useTabs': false,
       'semiColons': 'always',
@@ -29,7 +29,7 @@ const dprint = {
       'parameters.preferHanging': 'onlySingleItem',
       'tupleType.preferHanging': 'onlySingleItem',
       'typeParameters.preferHanging': 'onlySingleItem',
-      'preferSingleLine': false,
+      'preferSingleLine': true,
       'arrowFunction.useParentheses': 'force',
       'binaryExpression.linePerExpression': false,
       'jsx.bracketPosition': 'nextLine',
@@ -82,7 +82,7 @@ const dprint = {
   json: {
     plugin: 'node_modules/@dprint/json/plugin.wasm',
     options: {
-      'lineWidth': 120,
+      'lineWidth': 80,
       'indentWidth': 2,
       'useTabs': false,
       'newLineKind': 'lf',
@@ -121,10 +121,7 @@ const dprint = {
   },
   dockerfile: {
     plugin: 'node_modules/@dprint/dockerfile/plugin.wasm',
-    options: {
-      lineWidth: 120,
-      newLineKind: 'lf',
-    },
+    options: { lineWidth: 80, newLineKind: 'lf' },
   },
   malva: {
     plugin: 'node_modules/dprint-plugin-malva/plugin.wasm',
@@ -150,16 +147,13 @@ const dprint = {
       'keyframeSelectorNotation': 'keyword',
       'attrValueQuotes': 'always',
       'preferSingleLine': true,
-      'selectors.preferSingleLine': true,
-      'functionArgs.preferSingleLine': true,
       'sassContentAtRule.preferSingleLine': false,
-      'sassIncludeAtRule.preferSingleLine': true,
-      'sassMap.preferSingleLine': true,
-      'sassModuleConfig.preferSingleLine': true,
-      'sassParams.preferSingleLine': true,
-      'lessImportOptions.preferSingleLine': true,
-      'lessMixinArgs.preferSingleLine': true,
-      'lessMixinParams.preferSingleLine': true,
+      'sassIncludeAtRule.preferSingleLine': false,
+      'sassMap.preferSingleLine': false,
+      'sassModuleConfig.preferSingleLine': false,
+      'sassParams.preferSingleLine': false,
+      'lessMixinArgs.preferSingleLine': false,
+      'lessMixinParams.preferSingleLine': false,
       'singleLineTopLevelDeclarations': false,
       'selectorOverrideCommentDirective': 'malva-selector-override',
       'ignoreCommentDirective': 'malva-ignore',
@@ -229,7 +223,10 @@ const dprint = {
   },
 } as const;
 
-const useDprint = (files: string[], plugins: { plugin: string; options: Record<string, unknown>; }[]): FlatConfig => ({
+const useDprint = (
+  files: string[],
+  plugins: { plugin: string; options: Record<string, unknown>; }[],
+): FlatConfig => ({
   files,
   plugins: { format },
   languageOptions: { parser: format.parserPlain },
@@ -243,9 +240,8 @@ export default defineConfig([
   useDprint(['**/*.md'], [dprint.markdown]),
   useDprint(['**/Dockerfile*'], [dprint.dockerfile]),
   useDprint(['**/*.{css,scss,sass,less}'], [dprint.malva]),
-  useDprint(
-    ['**/*.{html,htm,vue,svelte,astro,jinja,j2,jinja2,twig,njk,nunjucks,vto,mustache,mst,xml,svg}'],
-    [dprint.markup, dprint.typescript, dprint.malva],
-  ),
+  useDprint([
+    '**/*.{html,htm,vue,svelte,astro,jinja,j2,jinja2,twig,njk,nunjucks,vto,mustache,mst,xml,svg}',
+  ], [dprint.markup, dprint.typescript, dprint.malva]),
   useDprint(['**/*.{yaml,yml}'], [dprint.yaml]),
 ]);
