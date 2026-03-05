@@ -217,12 +217,11 @@ const validatePackageJson = (): PackageContent => {
     throwError('💔 Missing `package.json`!');
   }
   const packageContent = readJson(paths.packageJson) as PackageContent;
-  if (!packageContent || Object.keys(packageContent).length === 0) {
-    throwError('💔 Missing `package.json`!');
-  }
   if (
-    packageContent.packageManager
-    && typeof packageContent.packageManager !== 'string'
+    !packageContent
+    || Object.keys(packageContent).length === 0
+    || packageContent.packageManager
+      && typeof packageContent.packageManager !== 'string'
   ) {
     throwError('💔 Invalid `package.json`!');
   }
@@ -236,8 +235,12 @@ const validatePackageJson = (): PackageContent => {
 const main = () => {
   // Check for version flag
   if (process.argv.includes('--version') || process.argv.includes('-v')) {
-    const pkg = JSON.parse(readFileSync(paths.packageJson, 'utf-8'));
-    console.log(pkg.version);
+    const pkg = JSON
+      .parse(readFileSync(
+        new URL('../package.json', import.meta.url),
+        'utf-8',
+      ));
+    console.log(`❤️ ${pkg.version}`);
     process.exit(0);
   }
 
