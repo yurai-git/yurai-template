@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // =============================================================================
 // Imports
 // =============================================================================
@@ -232,6 +234,13 @@ const validatePackageJson = (): PackageContent => {
 // =============================================================================
 
 const main = () => {
+  // Check for version flag
+  if (process.argv.includes('--version') || process.argv.includes('-v')) {
+    const pkg = JSON.parse(readFileSync(paths.packageJson, 'utf-8'));
+    console.log(pkg.version);
+    process.exit(0);
+  }
+
   console.info('✨ Injecting Yurai Template...');
 
   // Validate package.json
