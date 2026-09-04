@@ -1,7 +1,7 @@
 {
   "name": "@yurai/yurai-template",
-  "version": "1.0.3",
-  "description": "A package to install my personal template.",
+  "version": "1.1.0",
+  "description": "Installs Yurai's template",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yurai-git/yurai-template.git"
@@ -17,7 +17,7 @@
     "url": "https://github.com/yurai-git"
   },
   "license": "BSD-3-Clause",
-  "packageManager": "pnpm@10.30.2",
+  "packageManager": "pnpm@11.25.0",
   "type": "module",
   "bin": {
     "yurai-template": "dist/index.js"
@@ -27,20 +27,20 @@
     "eslint.config.ts"
   ],
   "devDependencies": {
-    "@dprint/dockerfile": "^0.3.3",
-    "@dprint/json": "^0.21.1",
-    "@dprint/markdown": "^0.21.1",
-    "@dprint/typescript": "^0.95.15",
-    "@eslint/compat": "^2.0.2",
-    "@types/node": "^25.3.0",
-    "dprint-plugin-malva": "^0.15.2",
-    "dprint-plugin-markup": "^0.26.0",
+    "@dprint/dockerfile": "^0.6.0",
+    "@dprint/json": "^0.23.0",
+    "@dprint/markdown": "^0.23.2",
+    "@dprint/typescript": "^0.96.1",
+    "@eslint/compat": "^2.1.0",
+    "@types/node": "^26.4.1",
+    "dprint-plugin-malva": "^0.16.0",
+    "dprint-plugin-markup": "^0.27.3",
     "dprint-plugin-yaml": "^0.6.0",
-    "eslint": "^10.0.2",
+    "eslint": "^10.9.1",
     "eslint-plugin-format": "^2.0.1",
-    "jiti": "^2.6.1",
-    "sass": "^1.97.3",
-    "typescript": "^5.9.3"
+    "jiti": "^2.7.0",
+    "sass": "^1.103.1",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "jsonc-parser": "^3.3.1"

@@ -1,6 +1,6 @@
 # Yurai Template
 
-A package to install my personal template.
+Installs Yurai's template.
 
 ## Installation
 
