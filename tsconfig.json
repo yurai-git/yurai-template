@@ -3,6 +3,7 @@
     "module": "NodeNext",
     "outDir": "dist",
     "moduleResolution": "nodenext",
+    "types": ["node"],
   },
   "include": ["index.ts"],
 }

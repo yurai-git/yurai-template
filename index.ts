@@ -4,10 +4,11 @@
 // Imports
 // =============================================================================
 
-import { spawnSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { parse } from 'jsonc-parser';
-import { join } from 'path';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import process from 'node:process';
 import type { PackageContent, PackageManagers } from './types.js';
 
 // =============================================================================
