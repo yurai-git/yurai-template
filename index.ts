@@ -120,8 +120,8 @@ const detectPackageManager =
   (initialPackageContent: PackageContent): PackageManagers => {
     for (const [manager, lock] of packageManagerLocks) {
       if (
-        initialPackageContent.packageManager?.startsWith(manager)
-        || existsSync(join(cwd, lock))
+        initialPackageContent.packageManager?.startsWith(manager) ||
+        existsSync(join(cwd, lock))
       ) {
         return manager;
       }
@@ -219,10 +219,10 @@ const validatePackageJson = (): PackageContent => {
   }
   const packageContent = readJson(paths.packageJson) as PackageContent;
   if (
-    !packageContent
-    || Object.keys(packageContent).length === 0
-    || packageContent.packageManager
-      && typeof packageContent.packageManager !== 'string'
+    !packageContent ||
+    Object.keys(packageContent).length === 0 ||
+    packageContent.packageManager &&
+      typeof packageContent.packageManager !== 'string'
   ) {
     throwError('💔 Invalid `package.json`!');
   }
