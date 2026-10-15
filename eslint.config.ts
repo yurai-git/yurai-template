@@ -102,7 +102,7 @@ const dprint = {
       'arrayExpression.preferSingleLine': false,
       'arrayPattern.preferSingleLine': true,
       'arguments.preferSingleLine': true,
-      'binaryExpression.preferSingleLine': true,
+      'binaryExpression.preferSingleLine': false,
       'computed.preferSingleLine': true,
       'conditionalExpression.preferSingleLine': true,
       'conditionalType.preferSingleLine': true,

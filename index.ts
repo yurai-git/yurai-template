@@ -22,6 +22,7 @@ const paths = {
   vscodeSettings: join(cwd, '.vscode', 'settings.json'),
   vscodeExtensions: join(cwd, '.vscode', 'extensions.json'),
   packageJson: join(cwd, 'package.json'),
+  pnpmWorkspaceYaml: join(cwd, 'pnpm-workspace.yaml'),
 } as const;
 
 // =============================================================================
@@ -118,6 +119,8 @@ const run = (command: string, args: string[]) => {
 
 const detectPackageManager =
   (initialPackageContent: PackageContent): PackageManagers => {
+    console.info('- Detecting package manager...');
+
     for (const [manager, lock] of packageManagerLocks) {
       if (
         initialPackageContent.packageManager?.startsWith(manager) ||
@@ -146,7 +149,8 @@ const buildInstallCommand = (
 const setScript = (pkg: PackageContent, name: string, value: string) => {
   pkg.scripts ??= {};
   if (pkg.scripts[name]) {
-    console.info(`👀 The script \`${name}\` already exists, overwriting it...`);
+    console
+      .info(`  - The script \`${name}\` already exists, overwriting it...`);
   }
   pkg.scripts[name] = value;
 };
@@ -162,7 +166,9 @@ const setupVscodeSettings = () => {
   const finalSettings = { ...existingSettings, ...defaultVscodeSettings };
 
   if (JSON.stringify(finalSettings) !== JSON.stringify(existingSettings)) {
-    console.info('👀 Writing updated VS Code settings...');
+    console.info('- Updating VS Code settings...');
+  } else {
+    console.info('- Creating VS Code settings...');
   }
   writeFileSync(
     paths.vscodeSettings,
@@ -185,7 +191,9 @@ const setupVscodeExtensions = () => {
   }
 
   if (addedExtensions) {
-    console.info('👀 Adding VS Code extension recommendation...');
+    console.info('- Updating VS Code extension recommendations...');
+  } else {
+    console.info('- Creating VS Code extension recommendations...');
   }
   writeFileSync(
     paths.vscodeExtensions,
@@ -194,14 +202,17 @@ const setupVscodeExtensions = () => {
 };
 
 const setupEslintConfig = () => {
-  if (!existsSync(paths.eslintConfig)) {
-    writeFileSync(paths.eslintConfig, defaultEslintConfig);
+  if (existsSync(paths.eslintConfig)) {
+    console.info('- Updating `eslint.config.ts`...');
   } else {
-    console.info('👀 `eslint.config.ts` already exists, skipping creation...');
+    console.info('- Creating `eslint.config.ts`...');
   }
+  writeFileSync(paths.eslintConfig, defaultEslintConfig);
 };
 
 const setupPackageJsonScripts = () => {
+  console.info('- Setting up `package.json` scripts...');
+
   const packageJson = JSON
     .parse(readFileSync(paths.packageJson, 'utf-8')) as PackageContent;
   setScript(packageJson, 'lint', 'eslint .');
@@ -209,13 +220,61 @@ const setupPackageJsonScripts = () => {
   writeFileSync(paths.packageJson, JSON.stringify(packageJson, null, 2) + '\n');
 };
 
+const setupPnpmWorkspaceYaml = () => {
+  const defaultPnpmWorkspaceConfig =
+    "allowBuilds:\n  '@parcel/watcher': true\n";
+
+  if (!existsSync(paths.pnpmWorkspaceYaml)) {
+    console.info('- Creating `pnpm-workspace.yaml`...');
+    writeFileSync(paths.pnpmWorkspaceYaml, defaultPnpmWorkspaceConfig);
+    return;
+  }
+
+  const content = readFileSync(paths.pnpmWorkspaceYaml, 'utf-8');
+
+  if (/['"]?@parcel\/watcher['"]?\s*:\s*true/.test(content)) {
+    return;
+  }
+
+  console.info('- Updating `pnpm-workspace.yaml`...');
+
+  const allowBuildsMatch = content.match(/^(\s*)allowBuilds:\s*$/m);
+  if (allowBuildsMatch && allowBuildsMatch.index !== undefined) {
+    const indent = allowBuildsMatch[1] || '';
+    const insertPos = allowBuildsMatch.index + allowBuildsMatch[0].length;
+    const itemToAdd = `\n${indent}  '@parcel/watcher': true`;
+    let newContent = content.slice(0, insertPos) + itemToAdd +
+      content.slice(insertPos);
+    if (!newContent.endsWith('\n')) {
+      newContent += '\n';
+    }
+    writeFileSync(paths.pnpmWorkspaceYaml, newContent);
+    return;
+  }
+
+  const separator = content.length === 0
+    ? ''
+    : content.endsWith('\n\n')
+    ? ''
+    : content.endsWith('\n')
+    ? '\n'
+    : '\n\n';
+
+  writeFileSync(
+    paths.pnpmWorkspaceYaml,
+    `${content}${separator}${defaultPnpmWorkspaceConfig}`,
+  );
+};
+
 // =============================================================================
 // Package validation and initialization
 // =============================================================================
 
 const validatePackageJson = (): PackageContent => {
+  console.info('- Validating `package.json`...');
+
   if (!existsSync(paths.packageJson)) {
-    throwError('💔 Missing `package.json`!');
+    throwError('  - Missing `package.json`!');
   }
   const packageContent = readJson(paths.packageJson) as PackageContent;
   if (
@@ -224,7 +283,7 @@ const validatePackageJson = (): PackageContent => {
     packageContent.packageManager &&
       typeof packageContent.packageManager !== 'string'
   ) {
-    throwError('💔 Invalid `package.json`!');
+    throwError('  - Invalid `package.json`!');
   }
   return packageContent;
 };
@@ -241,28 +300,35 @@ const main = () => {
         new URL('../package.json', import.meta.url),
         'utf-8',
       ));
-    console.log(`❤️ ${pkg.version}`);
+    console.log(`- ${pkg.version}`);
     process.exit(0);
   }
 
-  console.info('✨ Injecting Yurai Template...');
+  console.info('- Injecting Yurai Template...');
 
   // Validate package.json
   const initialPackageContent = validatePackageJson();
 
   // Detect package manager and install dependencies
   const packageManager = detectPackageManager(initialPackageContent);
+
+  if (packageManager === 'pnpm') {
+    setupPnpmWorkspaceYaml();
+  }
+
   const { command, args } = buildInstallCommand(
     packageManager,
     dependenciesToInstall,
   );
+  console.info('- Installing dependencies...');
   const result = run(command, args);
 
   if (result.error) {
-    throwError(['💔 Failed to install dependencies!', result.error].join('\n'));
+    throwError(['  - Failed to install dependencies!', result.error]
+      .join('\n'));
   }
   if (result.status !== 0) {
-    throwError(`Exit code: ${result.status}`);
+    throwError(`  - Failed to install dependencies! Exit code: ${result.status}`);
   }
 
   // Setup configuration files
@@ -271,7 +337,7 @@ const main = () => {
   setupEslintConfig();
   setupPackageJsonScripts();
 
-  console.info('✨ Yurai Template injected successfully!');
+  console.info('- Yurai Template injected successfully!');
 };
 
 main();
